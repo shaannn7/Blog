@@ -1,23 +1,31 @@
-import logo from './logo.svg';
+import { Routes, Route, useNavigate } from 'react-router-dom';
 import './App.css';
+import { createContext, useState } from 'react';
+import Blog from './Blog/Blog'
+import Blogs from './Blog/Blogs';
+import CreateBlog from './Blog/CreateBlog';
+import 'bootstrap/dist/css/bootstrap.min.css';
 
+export const myContext = createContext()
 function App() {
+  const navigate = useNavigate()
+  const [blogData, setblogData] = useState([{}])
+  const handleChange = (title, body) => {
+    const storage = [...blogData, { title: title, body: body }]
+    setblogData(storage)
+    navigate('/')
+  }
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <myContext.Provider value={blogData}>
+        <Routes>
+          <Route path="/" element={<Blogs />} />
+          <Route path="/CreateBlog" element={<CreateBlog handleChange={handleChange} />} />
+          <Route path="/Blog/:id" element={<Blog />} />
+        </Routes>
+      </myContext.Provider>
+
     </div>
   );
 }
